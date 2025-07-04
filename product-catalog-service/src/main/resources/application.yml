@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: product-catalog-service
+
+server:
+  port: 8086
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8082/eureka/

@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: shopping-cart-service
+
+server:
+  port: 8087
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8082/eureka/
