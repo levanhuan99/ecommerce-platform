@@ -1,4 +1,4 @@
-package com.ecommerce.order_ervice;
+package com.ecommerce.order_service;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

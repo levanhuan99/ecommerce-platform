@@ -9,6 +9,8 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Component
 public class JwtAuthFilter implements GatewayFilter {
@@ -29,18 +31,30 @@ public class JwtAuthFilter implements GatewayFilter {
         if (isPublicEndpoint(path)) {
             return chain.filter(exchange);
         }
-        String authHeader = exchange.getRequest().getHeaders().getFirst("Authorization");
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            return exchange.getResponse().setComplete();
+        Optional<String> authHeader = Optional.ofNullable(
+                exchange.getRequest().getHeaders().getFirst("Authorization")
+        );
+        if (authHeader.isEmpty()) {
+            return getVoidMono(exchange);
         }
-        String token = authHeader.substring(7);
+        if (!authHeader.get().startsWith("Bearer ")) {
+            return getVoidMono(exchange);
+        }
+        String token = authHeader.get().substring(7);
         if (!JwtUtil.validateToken(token)) {
-            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-            return exchange.getResponse().setComplete();
+            return getVoidMono(exchange);
         }
         return chain.filter(exchange);
     }
     private boolean isPublicEndpoint(String path) {
         return PUBLIC_PATHS.stream().anyMatch(path::equalsIgnoreCase);
     }
+
+    private static Mono<Void> getVoidMono(ServerWebExchange exchange) {
+        exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+        return exchange.getResponse().setComplete();
+    }
+
+
+
 }
