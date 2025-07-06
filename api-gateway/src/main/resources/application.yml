@@ -18,6 +18,11 @@ spring:
           predicates:
             - Path=/api/user/**
 
+        - id: product-catalog-service
+          uri: http://localhost:8086
+          predicates:
+            - Path=/api/product/**
+
 eureka:
   client:
     service-url:

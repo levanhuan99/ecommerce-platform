@@ -9,13 +9,16 @@ import org.springframework.context.annotation.Configuration;
 public class GatewayRoutesConfig {
     @Bean
     public RouteLocator routeLocator(RouteLocatorBuilder builder, JwtAuthFilter jwtAuthFilter) {
-        return builder.routes()
-                .route("user-service", r -> r.path("/api/user/**")
+      return builder.routes()
+                .route("user-service", r -> r.path("/api/user/**", "/oauth2/authorization/github")
                         .filters(f -> f.filter(jwtAuthFilter))
                         .uri("http://localhost:8088"))
                 .route("notification-service", r -> r.path("/api/notification/**")
                         .filters(f -> f.filter(jwtAuthFilter))
                         .uri("http://localhost:8083"))
-                .build();
+                .route("product-catalog-service", r -> r.path("/api/product/**")
+                        .filters(f -> f.filter(jwtAuthFilter))
+                        .uri("http://localhost:8086"))
+                .build();  
     }
 }
